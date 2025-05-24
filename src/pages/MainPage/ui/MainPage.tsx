@@ -8,8 +8,7 @@ import { NotFoundInner } from "@/pages/NotFound";
 import { Roles } from "@/shared/config";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 import { AdCard } from "@/widgets/AdCard";
-import { FilterOutlined } from "@ant-design/icons";
-import { Button, Flex, Input, Spin, Typography } from "antd";
+import { Flex, Input, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
 
 const { Title } = Typography;
@@ -52,9 +51,9 @@ function MainPage() {
           onChange={(e) => setSearch(e.target.value)}
           onSearch={handleSearch}
         />
-        <Button icon={<FilterOutlined />} size="large">
+        {/* <Button icon={<FilterOutlined />} size="large">
           Фильтры и сортировка
-        </Button>
+        </Button> */}
       </Flex>
 
       {isLoading ? (

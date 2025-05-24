@@ -193,7 +193,7 @@ function AdItemPage() {
         <Title level={2} style={{ marginBottom: 16 }}>
           Описание
         </Title>
-        <Text style={{ maxWidth: 800, fontSize: 18 }}>
+        <Text style={{ maxWidth: 800, fontSize: 18, whiteSpace: "pre-wrap" }}>
           {adItem.description}
         </Text>
       </div>
