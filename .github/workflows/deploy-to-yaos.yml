@@ -18,7 +18,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Build project
         run: npm run build
@@ -38,9 +38,4 @@ jobs:
 
       - name: Sync dist to Yandex Object Storage
         run: |
-          s3cmd sync \
-            --guess-mime-type \
-            --delete-removed \
-            --acl-public \
-            --add-header="Cache-Control: no-cache, max-age=0" \
-            ./dist/ s3://${{ secrets.YANDEX_S3_BUCKET }}/
+          s3cmd sync --acl-public dist/ s3://${{ secrets.YANDEX_S3_BUCKET }}/
