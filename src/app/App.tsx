@@ -1,4 +1,5 @@
 import "./styles/reset.css";
+import "antd/dist/reset.css";
 import "./styles/index.css";
 
 import { Providers } from "./providers";
