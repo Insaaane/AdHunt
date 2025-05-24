@@ -23,8 +23,14 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Install AWS CLI
-        run: sudo apt-get update && sudo apt-get install -y awscli
+      - name: Install pip
+        run: sudo apt-get update && sudo apt-get install -y python3-pip
+
+      - name: Install AWS CLI via pip
+        run: pip3 install --upgrade --user awscli
+
+      - name: Add AWS CLI to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Sync dist to Yandex Object Storage (AWS CLI)
         run: |
