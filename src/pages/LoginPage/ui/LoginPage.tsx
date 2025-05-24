@@ -1,18 +1,22 @@
-// LoginPage.tsx
 import { logToFile } from "@/shared/lib/logger";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
-import { Form, Input, Typography, Button, Flex } from "antd";
+import { Form, Input, Typography, Button, Flex, message } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { loginSchema, LoginFormValues } from "../model/validateSchema";
+import { useAppDispatch } from "@/shared/hooks";
+import { loginUser } from "@/entities/User";
 
 const { Title } = Typography;
 
 function LoginPage() {
+  const dispatch = useAppDispatch();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -22,13 +26,19 @@ function LoginPage() {
     mode: "onBlur",
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: LoginFormValues) => {
     logToFile("Выполнен вход в систему");
+    try {
+      await dispatch(loginUser(data)).unwrap();
+    } catch (err) {
+      messageApi.error("Ошибка авторизации");
+      console.error("Ошибка авторизации: ", err);
+    }
   };
 
   return (
     <Flex vertical style={{ width: 400, margin: "auto" }}>
+      {contextHolder}
       <Title level={1} style={{ marginBottom: 32 }}>
         Вход в систему
       </Title>
@@ -61,7 +71,7 @@ function LoginPage() {
         </Form.Item>
 
         <Flex justify="space-between" align="center">
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={isSubmitting}>
             Войти
           </Button>
           <p>

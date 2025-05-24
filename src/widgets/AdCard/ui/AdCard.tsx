@@ -1,26 +1,37 @@
-import { Card, Typography } from "antd";
+import { Card, Typography, Watermark } from "antd";
 import React from "react";
 import cls from "./AdCard.module.css";
 import { HeartOutlined, HeartTwoTone } from "@ant-design/icons";
+import { IListingItem } from "@/entities/Listings/model/types";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  title: string;
-  description: string;
-  img: string;
-  cost: number | null;
-  isFavorite?: boolean;
+  item: IListingItem;
 }
 
 const { Text, Paragraph } = Typography;
 
-function AdCard({ title, description, img, cost, isFavorite }: Props) {
+function AdCard({ item }: Props) {
+  const navigate = useNavigate();
+  const isAuth = localStorage.getItem("token");
+
+  const { id, description, title, price, images, is_favorite } = item;
+
+  const image = images[0] ? images[0].image : "";
+
   const actions =
-    isFavorite === undefined
-      ? [<Text strong={!!cost}>{cost ? `${cost} ₽` : "Цена не указана"}</Text>]
+    isAuth === null
+      ? [
+          <Text strong={!!price}>
+            {price ? `${price} ₽` : "Цена не указана"}
+          </Text>,
+        ]
       : [
-          <Text strong={!!cost}>{cost ? `${cost} ₽` : "Цена не указана"}</Text>,
+          <Text strong={!!price}>
+            {price ? `${price} ₽` : "Цена не указана"}
+          </Text>,
           <>
-            {isFavorite ? (
+            {is_favorite ? (
               <HeartTwoTone twoToneColor="#FF0000" key="favourites" />
             ) : (
               <HeartOutlined />
@@ -34,10 +45,17 @@ function AdCard({ title, description, img, cost, isFavorite }: Props) {
       style={{ width: 320 }}
       cover={
         <div className={cls.imgContainer}>
-          <img src={img} height={200} alt="Изображение карточки объявления" />
+          {image ? (
+            <img src={image} alt="Изображение карточки объявления" />
+          ) : (
+            <Watermark gap={[30, 50]} zIndex={0} content="No image">
+              <div style={{ height: 230 }} />
+            </Watermark>
+          )}
         </div>
       }
       actions={actions}
+      onClick={() => navigate(`/ads/${id}`)}
     >
       <Card.Meta
         title={title}

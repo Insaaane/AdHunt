@@ -1,8 +1,6 @@
 .imgContainer {
   height: 230px;
   overflow: hidden;
-
-  position: relative;
 }
 
 .imgContainer img {

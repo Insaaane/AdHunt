@@ -5,6 +5,8 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Roles } from "@/shared/config";
 import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { logToFile } from "@/shared/lib/logger";
+import { useAppSelector } from "@/shared/hooks";
+import { getUserInfo } from "@/entities/User";
 
 const { Header, Content, Footer } = Layout;
 
@@ -25,12 +27,11 @@ const userItems: ItemType<MenuItemType>[] = [
 
 const moderatorItems: ItemType<MenuItemType>[] = [
   { key: "/moderation", label: "Модерация" },
-  { key: "/profile", label: "Личный кабинет" },
 ];
 
 function GlobalLayout() {
-  const token = "ff";
-  const role = Roles.MODERATOR;
+  const token = localStorage.getItem("token");
+  const role = useAppSelector(getUserInfo).role;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,9 +54,9 @@ function GlobalLayout() {
   };
 
   const menuItems = token
-    ? role === Roles.USER
-      ? userItems
-      : moderatorItems
+    ? role === Roles.MODERATOR
+      ? moderatorItems
+      : userItems
     : unAuthItems;
 
   return (

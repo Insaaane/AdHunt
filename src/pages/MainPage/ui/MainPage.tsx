@@ -1,19 +1,35 @@
+import {
+  getListingsFull,
+  getListingsFullInfo,
+  getListingsRequestStatus,
+} from "@/entities/Listings";
+import { getUserInfo } from "@/entities/User";
+import { NotFoundInner } from "@/pages/NotFound";
 import { Roles } from "@/shared/config";
-import { adsWithFavorite, adsWithoutFavorite } from "@/shared/config/mock";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 import { AdCard } from "@/widgets/AdCard";
 import { FilterOutlined } from "@ant-design/icons";
-import { Button, Flex, Input, Typography } from "antd";
+import { Button, Flex, Input, Spin, Typography } from "antd";
+import { useEffect, useState } from "react";
 
 const { Title } = Typography;
 
 function MainPage() {
-  const role = Roles.MODERATOR;
-  const token = "gff";
-
+  const dispatch = useAppDispatch();
+  const adsList = useAppSelector(getListingsFullInfo);
+  const { isLoading } = useAppSelector(getListingsRequestStatus);
+  const role = useAppSelector(getUserInfo).role;
+  const token = localStorage.getItem("token");
   const isModerator = token && role === Roles.MODERATOR;
-  const isUser = token && role === Roles.USER;
+  const [search, setSearch] = useState("");
 
-  const ads = isUser ? adsWithFavorite : adsWithoutFavorite;
+  useEffect(() => {
+    dispatch(getListingsFull(""));
+  }, [dispatch]);
+
+  const handleSearch = (value: string) => {
+    dispatch(getListingsFull(value));
+  };
 
   return (
     <>
@@ -32,25 +48,29 @@ function MainPage() {
           allowClear
           enterButton="Поиск"
           size="large"
-          onSearch={(value) => console.log(value)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onSearch={handleSearch}
         />
         <Button icon={<FilterOutlined />} size="large">
           Фильтры и сортировка
         </Button>
       </Flex>
 
-      <Flex wrap gap={24} justify="center">
-        {ads.map((item, index) => (
-          <AdCard
-            key={index}
-            title={item.title}
-            description={item.description}
-            img={item.img}
-            cost={item.cost}
-            isFavorite={item.isFavorite}
-          />
-        ))}
-      </Flex>
+      {isLoading ? (
+        <Spin style={{ margin: "auto" }} size="large" />
+      ) : adsList.length ? (
+        <Flex wrap gap={24} justify="center">
+          {adsList.map((item, index) => (
+            <AdCard key={index} item={item} />
+          ))}
+        </Flex>
+      ) : (
+        <NotFoundInner
+          desc="Объявления не найдены. Попробуйте обновить страницу."
+          isReload
+        />
+      )}
     </>
   );
 }

@@ -2,11 +2,11 @@ import { z } from "zod";
 
 export const registerSchema = z
   .object({
-    lastName: z.string().min(1, "Введите фамилию"),
-    firstName: z.string().min(1, "Введите имя"),
-    patronymic: z.string().optional(),
+    last_name: z.string().min(1, "Введите фамилию"),
+    first_name: z.string().min(1, "Введите имя"),
+    middle_name: z.string().optional(),
     email: z.string().email("Некорректный email"),
-    phone: z
+    phone_number: z
       .string()
       .regex(/^\+?[1-9]\d{10,14}$/, "Некорректный номер телефона"),
     password: z.string().min(8, "Минимум 8 символов"),
