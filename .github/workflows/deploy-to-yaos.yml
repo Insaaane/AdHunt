@@ -38,7 +38,7 @@ jobs:
 
       - name: Sync dist to Yandex Object Storage
         run: |
-          s3cmd sync --acl-public dist/ s3://${{ secrets.YANDEX_S3_BUCKET }}/
+          s3cmd sync --acl-public --guess-mime-type dist/ s3://${{ secrets.YANDEX_S3_BUCKET }}/
 
       - name: Deploy nginx config
         uses: appleboy/scp-action@v0.1.7
@@ -59,5 +59,3 @@ jobs:
             sudo mv /tmp/nginx.frontend.conf /etc/nginx/sites-available/adhunt
             sudo ln -sf /etc/nginx/sites-available/adhunt /etc/nginx/sites-enabled/adhunt
             sudo nginx -t && sudo systemctl reload nginx
-
-            
