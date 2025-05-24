@@ -1,0 +1,41 @@
+name: Deploy Frontend to Yandex Object Storage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Install s3cmd
+        run: sudo apt-get update && sudo apt-get install -y s3cmd
+
+      - name: Configure s3cmd
+        run: |
+          echo "[default]" > ~/.s3cfg
+          echo "access_key = ${{ secrets.YANDEX_S3_ACCESS_KEY }}" >> ~/.s3cfg
+          echo "secret_key = ${{ secrets.YANDEX_S3_SECRET_KEY }}" >> ~/.s3cfg
+          echo "host_base = ${{ secrets.YANDEX_S3_ENDPOINT }}" >> ~/.s3cfg
+          echo "host_bucket = ${{ secrets.YANDEX_S3_ENDPOINT }}" >> ~/.s3cfg
+          echo "bucket_location = ru-central1" >> ~/.s3cfg
+          echo "use_https = True" >> ~/.s3cfg
+
+      - name: Sync dist to Yandex Object Storage
+        run: |
+          s3cmd sync --delete-removed --acl-public dist/ s3://${{ secrets.YANDEX_S3_BUCKET }}/
