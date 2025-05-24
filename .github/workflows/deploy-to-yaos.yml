@@ -39,3 +39,5 @@ jobs:
       - name: Sync dist to Yandex Object Storage
         run: |
           s3cmd sync --delete-removed --acl-public dist/ s3://${{ secrets.YANDEX_S3_BUCKET }}/
+
+          
