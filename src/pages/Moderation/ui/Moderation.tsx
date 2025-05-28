@@ -3,6 +3,7 @@ import {
   getModerateInfo,
   getModerationList,
 } from "@/entities/Listings";
+import { ExcelExport } from "@/features/ExcelExport";
 import { NotFoundInner } from "@/pages/NotFound";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 import { resetStore } from "@/shared/store";
@@ -38,9 +39,12 @@ function Moderation() {
         style={{ marginBottom: 32, width: "100%" }}
       >
         <Title level={1}>Объявления на модерацию</Title>
-        <Button size="large" danger onClick={handleLogout} type="default">
-          Выйти
-        </Button>
+        <Flex gap={24}>
+          <ExcelExport data={adsList} />
+          <Button size="large" danger onClick={handleLogout} type="default">
+            Выйти
+          </Button>
+        </Flex>
       </Flex>
 
       {isLoading ? (

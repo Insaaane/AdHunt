@@ -4,6 +4,9 @@ import cls from "./AdCard.module.css";
 import { HeartOutlined, HeartTwoTone } from "@ant-design/icons";
 import { IListingItem } from "@/entities/Listings/model/types";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/shared/hooks";
+import { getUserInfo } from "@/entities/User";
+import { Roles } from "@/shared/config";
 
 interface Props {
   item: IListingItem;
@@ -14,13 +17,14 @@ const { Text, Paragraph } = Typography;
 function AdCard({ item }: Props) {
   const navigate = useNavigate();
   const isAuth = localStorage.getItem("token");
+  const role = useAppSelector(getUserInfo).role;
 
   const { id, description, title, price, images, is_favorite } = item;
 
   const image = images[0] ? images[0].image : "";
 
   const actions =
-    isAuth === null
+    isAuth === null || role === Roles.MODERATOR
       ? [
           <Text strong={!!price}>
             {price ? `${price} ₽` : "Цена не указана"}
