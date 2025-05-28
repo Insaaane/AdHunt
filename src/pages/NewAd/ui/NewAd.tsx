@@ -249,6 +249,9 @@ function NewAd() {
         )}
 
         <Flex justify="space-between" gap={12}>
+          <Button type="primary" htmlType="submit" loading={isSubmitting}>
+            {adId ? "Сохранить" : "Отправить на модерацию"}
+          </Button>
           <Button
             variant="outlined"
             color="danger"
@@ -256,9 +259,6 @@ function NewAd() {
             disabled={isSubmitting}
           >
             Отмена
-          </Button>
-          <Button type="primary" htmlType="submit" loading={isSubmitting}>
-            {adId ? "Сохранить" : "Отправить на модерацию"}
           </Button>
         </Flex>
       </Form>
